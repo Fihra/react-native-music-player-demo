@@ -131,7 +131,7 @@ class App extends React.Component {
       }
     }
 
-    handleNewTrack = async () => {
+    handleNextTrack = async () => {
       let { playbackInstance, currentIndex } = this.state;
       if(playbackInstance) {
         await playbackInstance.unloadAsync()
@@ -141,8 +141,25 @@ class App extends React.Component {
         this.setState({
           currentIndex
         })
-        this.loadAudio()
+        this.loadAudio() 
       }
+    }
+
+    renderFileInfo(){
+      const { playbackInstance, currentIndex } = this.state
+      return playbackInstance ? (
+        <View style={styles.trackInfo}>
+          <Text style={[styles.trackInfoText, styles.largeText]}>
+            {audioBookPlaylist[currentIndex].title}
+          </Text>
+          <Text style={[styles.trackInfoText, styles.smallText]}>
+            {audioBookPlaylist[currentIndex].author}
+          </Text>
+          <Text style={[styles.trackInfoText, styles.smallText]}>
+            {audioBookPlaylist[currentIndex].source}
+          </Text>
+        </View>
+      ) : null
     }
   
 
@@ -156,21 +173,21 @@ class App extends React.Component {
           }}
         />
         <View style={styles.controls}>
-          <TouchableOpacity style={styles.control} onPress={() => alert('')}>
+          <TouchableOpacity style={styles.control} onPress={this.handlePreviousTrack}>
             <Ionicons name="ios-skip-backward" size={48} color="#444"/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.control} onPress={() => alert('')}>
+          <TouchableOpacity style={styles.control} onPress={this.handlePlayPause}>
             {this.state.isPlaying ? (
               <Ionicons name="ios-pause" size={48} color="#444" />
             ) : (
               <Ionicons name="ios-play-circle" size={48} color="#444" />
             )}
           </TouchableOpacity>
-          <TouchableOpacity style={styles.control} onPress={() => alert('')}>
+          <TouchableOpacity style={styles.control} onPress={this.handleNextTrack}>
             <Ionicons name="ios-skip-forward" size={48} color="#444" />
           </TouchableOpacity>
         </View>
-        {/* <Text>Open up App.js to start working on your app!</Text> */}
+        {this.renderFileInfo()}
       </View>
     );
   }
@@ -191,10 +208,26 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250
   },
-  controls: {
-    flexDirection: 'row'
+  trackInfo: {
+    padding: 40,
+    backgroundColor: '#fff'
+  },
+  trackInfoText: {
+    textAlign: 'center',
+    flexWrap: "wrap",
+    color: '#550088'
+  },
+  largeText: {
+    fontSize: 22
+  },
+  smallText: {
+    fontSize: 16
   },
   control: {
     margin: 20
+  },
+  controls: {
+    flexDirection: 'row'
   }
+
 });
